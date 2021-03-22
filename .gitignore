@@ -1,6 +1,9 @@
 # Node modules
 node_modules
 
+#Folder data docker
+database/db
+
 # Adonis directory for storing tmp files
 tmp
 
