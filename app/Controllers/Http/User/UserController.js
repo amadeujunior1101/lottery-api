@@ -6,12 +6,10 @@ const crypto = require("crypto");
 const Mail = use("Mail");
 
 class UserController {
-
-  async index({ request, response, view }) {}
-
   async store({ request, response }) {
     const userObj = request.only(["full_name", "email", "password"]);
 
+// return  userObj.full_name.replace(/\s/g, "");
     const existEmail = await User.findBy("email", userObj.email);
 
     if (existEmail)
@@ -24,7 +22,7 @@ class UserController {
       });
 
     const user = await User.create({
-      full_name: userObj.full_name,
+      full_name: userObj.full_name.replace(/\s/g, ""),
       email: userObj.email,
       password: userObj.password,
     });
@@ -90,9 +88,7 @@ class UserController {
     }
   }
 
-  async delete({ params, request, response }) {
-
-  }
+  async delete({ params, request, response }) {}
 }
 
 module.exports = UserController;
