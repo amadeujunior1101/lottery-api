@@ -9,20 +9,10 @@ class UserController {
   async store({ request, response }) {
     const userObj = request.only(["full_name", "email", "password"]);
 
-// return  userObj.full_name.replace(/\s/g, "");
-    const existEmail = await User.findBy("email", userObj.email);
-
-    if (existEmail)
-      return response.status(200).json({
-        type: "success",
-        status_code: 200,
-        message: "E-mail already registered.",
-        user_message: "E-mail já cadastrado.",
-        data: [],
-      });
+  // return userObj.email
 
     const user = await User.create({
-      full_name: userObj.full_name.replace(/\s/g, ""),
+      full_name: userObj.full_name,
       email: userObj.email,
       password: userObj.password,
     });
@@ -88,7 +78,9 @@ class UserController {
     }
   }
 
-  async delete({ params, request, response }) {}
+  async delete({ params, request, response }) {
+
+  }
 }
 
 module.exports = UserController;
