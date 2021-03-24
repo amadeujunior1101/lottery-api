@@ -9,7 +9,7 @@ class UserController {
   async store({ request, response }) {
     const userObj = request.only(["full_name", "email", "password"]);
 
-  // return userObj.email
+    // return userObj.email
 
     const user = await User.create({
       full_name: userObj.full_name,
@@ -34,7 +34,11 @@ class UserController {
     let dataEmail = [
       {
         token: token.token,
-        full_name: userObj.full_name,
+        full_name: userObj.full_name
+          .trim()
+          .replace(/\s{2,}/g, " ")
+          .replace(/[^a-zA-Z ]/g, "")
+          .toUpperCase(),
       },
     ];
 
@@ -78,9 +82,7 @@ class UserController {
     }
   }
 
-  async delete({ params, request, response }) {
-
-  }
+  async delete({ params, request, response }) {}
 }
 
 module.exports = UserController;
