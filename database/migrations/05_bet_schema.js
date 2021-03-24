@@ -11,7 +11,7 @@ class BetSchema extends Schema {
       table.float("price",8, 2).notNullable();
       table.string("date").notNullable();
       table.string("color").notNullable();
-      table.string("bets").notNullable();
+      table.string("numbers").notNullable();
       table.timestamps();
 
       table
