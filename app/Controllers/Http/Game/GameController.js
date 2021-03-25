@@ -3,6 +3,27 @@
 const Game = use("App/Models/Game");
 
 class GameController {
+  // paginação index
+  async index({ request, response }) {
+    try {
+      const game = await Game.query().fetch();
+      // await user.load('profile')
+      let convert_games = game.toJSON();
+
+      // convert_bets.data
+
+      return response.status(200).json({
+        type: "success",
+        data: convert_games,
+      });
+    } catch (error) {
+      return response.status(503).json({
+        type: "error",
+        data: { error: error.toString() },
+      });
+    }
+  }
+
   async store({ request, response }) {
     try {
       const gameObj = request.only([

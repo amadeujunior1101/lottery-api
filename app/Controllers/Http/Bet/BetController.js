@@ -42,13 +42,14 @@ class BetController {
 
       // return betObj.games[0]
 
+// usar o for
+
       await betObj.games.map((item, index) => {
         Bet.create({
-          type: item.type,
           price: item.price,
           date: item.date,
-          color: item.color,
-          bets: item.bets,
+          numbers: item.numbers,
+          game_id: item.game_id,
           user_id: betObj.user_id,
         });
       });
@@ -90,8 +91,12 @@ class BetController {
         .with("user", (builder) => {
           builder.setVisible(["id", "full_name"]);
         })
+        .with("game", (builder) => {
+          builder.setVisible(["id", "type", "color"]);
+          // builder.with("sectors");
+        })
         .where("user_id", user_id)
-        .setHidden(["created_at", "updated_at"])
+        .setHidden(["user_id", "game_id", "created_at", "updated_at"])
         .fetch();
 
       let convert_bets = bet.toJSON();
@@ -100,12 +105,12 @@ class BetController {
 
       convert_bets.map((item, index) => {
         convert_bets[index];
-        const { type, numbers, color, user_id, price, date } = item;
+        const { id, price, date, numbers, user, game } = item;
         let converted_bets = numbers.split(", ");
         return arrGames.push({
-          type: type,
-          user_id: user_id,
-          color: color,
+          id: item.id,
+          type: game.type,
+          color: game.color,
           price: price,
           date: date,
           numbers: converted_bets,
@@ -128,7 +133,7 @@ class BetController {
         status_code: 200,
         message: "Bets found.",
         user_message: "Apostas encontradas.",
-        data: arrGames,
+        data: bet,
       });
     } catch (error) {
       return response.status(503).json({

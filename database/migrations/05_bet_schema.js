@@ -7,12 +7,6 @@ class BetSchema extends Schema {
   up() {
     this.create("bets", (table) => {
       table.increments();
-      table.string("type").notNullable();
-      table.float("price",8, 2).notNullable();
-      table.string("date").notNullable();
-      table.string("color").notNullable();
-      table.string("numbers").notNullable();
-      table.timestamps();
 
       table
         .integer("user_id")
@@ -20,6 +14,17 @@ class BetSchema extends Schema {
         .references("id")
         .inTable("users")
         .notNullable();
+      table
+        .integer("game_id")
+        .unsigned()
+        .references("id")
+        .inTable("games")
+        .notNullable();
+
+      table.float("price", 8, 2).notNullable();
+      table.string("date").notNullable();
+      table.string("numbers").notNullable();
+      table.timestamps();
     });
   }
 

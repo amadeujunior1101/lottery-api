@@ -4,6 +4,7 @@
 const Model = use('Model')
 
 class Game extends Model {
+  // add relacionamento bet
 }
 
 module.exports = Game
