@@ -3,14 +3,20 @@
 const Game = use("App/Models/Game");
 
 class GameController {
-  // paginação index
   async index({ request, response }) {
     try {
-      const game = await Game.query().fetch();
-      // await user.load('profile')
-      let convert_games = game.toJSON();
+      const { page, limit } = request.only(["page", "limit"]);
 
-      // convert_bets.data
+      if (!page || !limit)
+        return response.status(200).json({
+          type: "info",
+          message: "Enter the page and limit parameters.",
+          user_message: "Informe os parametros de pagina e limite.",
+          data: [],
+        });
+
+      const game = await Game.query().paginate(page, limit);
+      let convert_games = game.toJSON();
 
       return response.status(200).json({
         type: "success",
@@ -42,7 +48,6 @@ class GameController {
 
       return response.status(200).json({
         type: "success",
-        status_code: 200,
         message: "Game successfully registered.",
         user_message: "Jogo cadastrado com sucesso.",
         data: [],
@@ -50,7 +55,6 @@ class GameController {
     } catch (error) {
       return response.status(503).json({
         type: "error",
-        status_code: 503,
         message: "exception found",
         user_message: "Desculpe-nos, houve um problema",
         data: { error: error.toString() },

@@ -6,7 +6,7 @@ class BetController {
   async index({ request, response }) {
     try {
       const bet = await Bet.query().fetch();
-      // await user.load('profile')
+
       let convert_bets = bet.toJSON();
 
       // convert_bets.data
@@ -31,30 +31,16 @@ class BetController {
 
   async store({ request, response }) {
     try {
-      const betObj = request.all();
-      //   "type",
-      //   "price",
-      //   "date",
-      //   "color",
-      //   "bets",
-      //   "user_id"
-      // ]);
+      const betObj = request.only(["date", "games"]);
 
-      // return betObj.games[0]
-
-// usar o for
-
-      await betObj.games.map((item, index) => {
-        Bet.create({
-          price: item.price,
-          date: item.date,
-          numbers: item.numbers,
-          game_id: item.game_id,
-          user_id: betObj.user_id,
+      for (let index = 0; index < betObj.games.length; index++) {
+        await Bet.create({
+          date: betObj.date,
+          numbers: betObj.games[index].numbers,
+          game_id: betObj.games[index].game_id,
+          user_id: 1,
         });
-      });
-
-      // await Bet.create(betObj);
+      }
 
       return response.status(200).json({
         type: "success",

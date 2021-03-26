@@ -17,21 +17,18 @@ class CreateGame {
     return {
       "type.required": {
         type: "info",
-        status_code: 201,
         message: "Required type game.",
         user_message: "Nome do jogo obrigatório.",
         data: [],
       },
       "type.unique": {
         type: "info",
-        status_code: 201,
         message: "Type game already registered.",
         user_message: "Jogo já cadastrado.",
         data: [],
       },
       "description.required": {
         type: "info",
-        status_code: 201,
         message: "Required description.",
         user_message: "Descrição obrigatória.",
         data: [],
@@ -39,7 +36,6 @@ class CreateGame {
 
       "range.required": {
         type: "info",
-        status_code: 201,
         message: "Required range.",
         user_message: "Quantidade de numeros obrigatória.",
         data: [],
@@ -47,7 +43,6 @@ class CreateGame {
 
       "price.required": {
         type: "info",
-        status_code: 201,
         message: "Required price.",
         user_message: "Preço obrigatório.",
         data: [],
@@ -55,7 +50,6 @@ class CreateGame {
 
       "max_number.required": {
         type: "info",
-        status_code: 201,
         message: "Required max number.",
         user_message: "Numero máximo obrigatório.",
         data: [],
@@ -63,7 +57,6 @@ class CreateGame {
 
       "color.required": {
         type: "info",
-        status_code: 201,
         message: "Required color.",
         user_message: "Cor obrigatória.",
         data: [],
@@ -71,7 +64,6 @@ class CreateGame {
 
       "min_cart_value.required": {
         type: "info",
-        status_code: 201,
         message: "Required minimum bet amount required.",
         user_message: "Valor minimo da aposta obrigatório.",
         data: [],
