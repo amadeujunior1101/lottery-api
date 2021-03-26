@@ -52,6 +52,9 @@ class User extends Model {
     return this.hasMany("App/Models/Token");
   }
   // add relacionamento bet
+  bet() {
+    return this.belongsTo("App/Models/Bet");
+  }
 }
 
 module.exports = User;

@@ -6,6 +6,28 @@ const crypto = require("crypto");
 const Mail = use("Mail");
 
 class UserController {
+  async index({ request, response }) {
+    try {
+      const users = await User.query()
+        .setHidden(["password", "reset_password", "created_at", "updated_at"])
+        .fetch();
+
+      // let convert_games = game.toJSON();
+
+      return response.status(200).json({
+        type: "success",
+        message: "List users.",
+        message_user: "Lista de usuários.",
+        data: users,
+      });
+    } catch (error) {
+      return response.status(503).json({
+        type: "error",
+        data: { error: error.toString() },
+      });
+    }
+  }
+
   async store({ request, response }) {
     try {
       const userObj = request.only(["full_name", "email", "password"]);
@@ -91,17 +113,18 @@ class UserController {
           data: [],
         });
       }
-      // await User.query().where("id", user.id).update({
-      //   full_name: userObj.full_name,
-      //   email: userObj.email,
-      //   password: userObj.password,
-      // });
 
-      const user2 = await User.findBy("id", user.id);
-      (user2.full_name = userObj.full_name),
-        (user2.email = userObj.email),
-        (user2.password = userObj.password),
-        await user2.save();
+      await User.query().where("id", user.id).update({
+        full_name: userObj.full_name,
+        email: userObj.email,
+        password: userObj.password,
+      });
+
+      // const user2 = await User.findBy("id", user.id);
+      // (user2.full_name = userObj.full_name),
+      //   (user2.email = userObj.email),
+      //   (user2.password = userObj.password),
+      //   await user2.save();
 
       return response.status(200).json({
         type: "success",
@@ -112,12 +135,30 @@ class UserController {
     } catch (error) {
       return response.status(503).json({
         type: "error",
-        data: { error: error.toString() },
+        error: error.toString(),
       });
     }
   }
 
-  async delete({ params, request, response }) {}
+  async delete({ auth, request, response }) {
+    try {
+      const user = auth.user;
+
+      await User.query().where("id", user.id).delete();
+
+      return response.status(200).json({
+        type: "success",
+        message: "User removed successfully.",
+        user_message: "Usuário removido com sucesso.",
+        data: [],
+      });
+    } catch (error) {
+      return response.status(503).json({
+        type: "error",
+        error: "Usuario não pode ser removido porque faz referencia a ",
+      });
+    }
+  }
 }
 
 module.exports = UserController;

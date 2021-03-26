@@ -3,7 +3,7 @@
 class CreateGame {
   get rules() {
     return {
-      type: "required|unique:games",
+      type: "required",
       description: "required",
       range: "required|number",
       price: "required",
@@ -40,13 +40,18 @@ class CreateGame {
         user_message: "Quantidade de numeros obrigatória.",
         data: [],
       },
-
       "range.number": {
         type: "info",
         message: "Required range number integer.",
-        user_message: "Número inteiro no range.",
+        user_message: "Número inteiro no range obrigatório.",
         data: [],
       },
+      // "range.min": {
+      //   type: "info",
+      //   message: "Required range number integer.",
+      //   user_message: "Número inteiro no range.",
+      //   data: [],
+      // },
 
       "price.required": {
         type: "info",

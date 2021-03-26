@@ -13,15 +13,18 @@ class BetSchema extends Schema {
         .unsigned()
         .references("id")
         .inTable("users")
-        .notNullable();
+        .notNullable()
+        .onDelete("cascade")
+        .onUpdate("cascade");
       table
         .integer("game_id")
         .unsigned()
         .references("id")
         .inTable("games")
-        .notNullable();
+        .notNullable()
+        .onUpdate("cascade")
+        .onDelete("cascade");
 
-      table.float("price", 8, 2).notNullable();
       table.string("date").notNullable();
       table.string("numbers").notNullable();
       table.timestamps();
