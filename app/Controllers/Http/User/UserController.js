@@ -104,7 +104,7 @@ class UserController {
     try {
       const user = auth.user;
       const userObj = request.only(["full_name", "email", "password"]);
-      // return userObj;
+
       if (!user.id) {
         return response.status(200).json({
           type: "success",
@@ -114,17 +114,15 @@ class UserController {
         });
       }
 
-      await User.query().where("id", user.id).update({
+      const instance_user = await User.find(user.id);
+
+      instance_user.merge({
         full_name: userObj.full_name,
         email: userObj.email,
         password: userObj.password,
       });
 
-      // const user2 = await User.findBy("id", user.id);
-      // (user2.full_name = userObj.full_name),
-      //   (user2.email = userObj.email),
-      //   (user2.password = userObj.password),
-      //   await user2.save();
+      await instance_user.save();
 
       return response.status(200).json({
         type: "success",

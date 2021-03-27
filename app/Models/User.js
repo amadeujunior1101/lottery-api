@@ -11,22 +11,9 @@ class User extends Model {
     super.boot();
 
     this.addHook("beforeSave", this.beforeSave);
-    this.addHook("beforeUpdate", this.beforeUpdate);
   }
 
   static async beforeSave(userInstance) {
-    if (userInstance.dirty.full_name && userInstance.dirty.password) {
-      userInstance.full_name = userInstance.full_name
-        .trim()
-        .replace(/\s{2,}/g, " ")
-        .replace(/[^a-zA-Z ]/g, "")
-        .toUpperCase();
-
-      userInstance.password = await Hash.make(userInstance.password);
-    }
-  }
-
-  static async beforeUpdate(userInstance) {
     if (userInstance.dirty.full_name && userInstance.dirty.password) {
       userInstance.full_name = userInstance.full_name
         .trim()

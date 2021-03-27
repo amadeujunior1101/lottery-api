@@ -1,0 +1,77 @@
+
+<head>
+<meta charset="UTF-8">
+<style type="text/css">
+.wrapper{
+  background-color: #FFF
+}
+
+.DivListGames{
+    display: flex;
+    margin-top: 20px;
+}
+.DivDivisorElement{
+    width: 5px;
+    height: auto;
+    border-radius: 20px;
+}
+.DivGameDescription{
+    margin: 0 10px 0 10px;
+    display: grid;
+    width: 280px;
+    height: 80px;
+    word-wrap: break-word;
+    align-items: center;
+}
+.SpanNumberList{
+    text-align: left;
+    font: italic bold 18px Helvetica Neue;
+    color: #868686;
+    width: 280px;
+}
+.SpanInfos{
+  text-align: left;
+  font: normal normal normal 17px Helvetica Neue;
+  color: #868686;
+}
+.SpanType{
+  font: italic normal bold 20px Helvetica Neue;
+}
+
+</style>
+</head>
+
+    <h2> Olá {{ full_name }} </h2>
+
+    <title>
+      Confira sua aposta
+    </title>
+
+    <div class="wrapper">
+
+    <p class="SpanNumberList" >
+      Confira sua aposta
+    </p>
+     <p class="SpanNumberList">
+      Total = {{total}}
+    </p>
+
+    <div class="content">
+          @each(item in games)
+              <div class="DivListGames">
+
+                  <div class="DivDivisorElement" style="background-color: {{item.color}}">
+                  </div>
+
+                  <div class="DivGameDescription">
+                      <span class="SpanNumberList">{{(item.numbers).join(", ")}}</span>
+                      <span class="SpanInfos">{{item.date}} - (R$ {{item.price}})</span>
+                      <span class="SpanType" style="color: {{item.color}}">{{item.type}}</span>
+                  </div>
+
+              </div>
+          @endeach
+    </div>
+
+</div>
+

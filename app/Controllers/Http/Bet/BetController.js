@@ -1,6 +1,7 @@
 "use strict";
 
 const Bet = use("App/Models/Bet");
+const Mail = use("Mail");
 
 class BetController {
   async index({ request, response }) {
@@ -43,6 +44,57 @@ class BetController {
         });
       }
 
+      const bet = await Bet.query()
+        .with("user", (builder) => {
+          builder.setVisible(["id", "full_name"]);
+        })
+        .with("game", (builder) => {
+          builder.setVisible(["id", "type", "color", "price"]);
+        })
+        .where("user_id", user.id)
+        .setHidden(["user_id", "game_id", "created_at", "updated_at"])
+        .fetch();
+
+      let convert_bets = bet.toJSON();
+
+      var total = convert_bets.reduce(
+        (accumulator, currentValue) => {
+          return Number(accumulator) + currentValue.game.price;
+        },
+        [0]
+      );
+
+      let arrGames = [];
+
+      convert_bets.map((item, index) => {
+        convert_bets[index];
+        const { id, price, date, numbers, user, game } = item;
+        let converted_bets = numbers.split(", ");
+        return arrGames.push({
+          id: item.id,
+          type: game.type,
+          color: game.color,
+          price: game.price,
+          date: date,
+          numbers: converted_bets,
+        });
+      });
+
+      let dataEmail = [
+        {
+          full_name: user.full_name,
+          games: arrGames,
+          total: total,
+        },
+      ];
+
+      await Mail.send(["emails.historic-bet"], dataEmail[0], (message) => {
+        message
+          .to(user.email)
+          .from("contato@deliveryserver.com.br")
+          .subject("Histórico de aposta");
+      });
+
       return response.status(200).json({
         type: "success",
         status_code: 200,
@@ -70,7 +122,7 @@ class BetController {
           builder.setVisible(["id", "full_name"]);
         })
         .with("game", (builder) => {
-          builder.setVisible(["id", "type", "color"]);
+          builder.setVisible(["id", "type", "color", "price"]);
         })
         .where("user_id", user.id)
         .setHidden(["user_id", "game_id", "created_at", "updated_at"])
@@ -81,14 +133,20 @@ class BetController {
       let arrGames = [];
 
       convert_bets.map((item, index) => {
-        convert_bets[index];
+        // convert_bets[index];
         const { id, price, date, numbers, user, game } = item;
+
+        // total = game.reduce(getTotal, 0);
+        // function getTotal(total, item) {
+        //   return total + item.price * item.quantity;
+        // }
+
         let converted_bets = numbers.split(", ");
         return arrGames.push({
           id: item.id,
           type: game.type,
           color: game.color,
-          price: price,
+          price: game.price,
           date: date,
           numbers: converted_bets,
         });
