@@ -31,17 +31,24 @@ class BetController {
   }
 
   async store({ request, response, auth }) {
+    let registeredBet = [];
+    let betRightNow = [];
+    let arrGames = [];
+    let dataEmail = [];
+
     try {
       const user = auth.user;
       const betObj = request.only(["date", "games"]);
 
       for (let index = 0; index < betObj.games.length; index++) {
-        await Bet.create({
-          date: betObj.date,
-          numbers: betObj.games[index].numbers,
-          game_id: betObj.games[index].game_id,
-          user_id: user.id,
-        });
+        registeredBet.push(
+          await Bet.create({
+            date: betObj.date,
+            numbers: betObj.games[index].numbers,
+            game_id: betObj.games[index].game_id,
+            user_id: user.id,
+          })
+        );
       }
 
       const bet = await Bet.query()
@@ -57,34 +64,47 @@ class BetController {
 
       let convert_bets = bet.toJSON();
 
-      var total = convert_bets.reduce(
+      for (let index = 0; index < registeredBet.length; index++) {
+        betRightNow.push(
+          convert_bets.filter((item, index2) => {
+            return item.id === registeredBet[index].id;
+          })
+        );
+      }
+
+      let arrayFlat = betRightNow.flat();
+      var total = arrayFlat.reduce(
         (accumulator, currentValue) => {
           return Number(accumulator) + currentValue.game.price;
         },
         [0]
       );
 
-      let arrGames = [];
-
-      convert_bets.map((item, index) => {
-        convert_bets[index];
-        const { id, price, date, numbers, user, game } = item;
+      for (let index = 0; index < arrayFlat.length; index++) {
+        const { id, price, date, numbers, user, game } = arrayFlat[index];
         let converted_bets = numbers.split(", ");
-        return arrGames.push({
-          id: item.id,
+
+        arrGames.push({
+          id: arrayFlat.id,
           type: game.type,
           color: game.color,
-          price: game.price,
-          date: date,
+          price: game.price
+            .toFixed(2)
+            .replace(".", ",")
+            .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."),
+          date: this.formatDate(date),
           numbers: converted_bets,
         });
-      });
+      }
 
-      let dataEmail = [
+      dataEmail = [
         {
           full_name: user.full_name,
           games: arrGames,
-          total: total,
+          total: total
+            .toFixed(2)
+            .replace(".", ",")
+            .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."),
         },
       ];
 
@@ -97,7 +117,6 @@ class BetController {
 
       return response.status(200).json({
         type: "success",
-        status_code: 200,
         message: "Bet successfully registered.",
         user_message: "Aposta cadastrado com sucesso.",
         data: [],
@@ -105,7 +124,6 @@ class BetController {
     } catch (error) {
       return response.status(503).json({
         type: "error",
-        status_code: 503,
         message: "exception found",
         user_message: "Desculpe-nos, houve um problema",
         data: { error: error.toString() },
@@ -132,26 +150,19 @@ class BetController {
 
       let arrGames = [];
 
-      convert_bets.map((item, index) => {
-        // convert_bets[index];
-        const { id, price, date, numbers, user, game } = item;
-
-        // total = game.reduce(getTotal, 0);
-        // function getTotal(total, item) {
-        //   return total + item.price * item.quantity;
-        // }
+      for (let index = 0; index < convert_bets.length; index++) {
+        const { date, numbers, game } = convert_bets[index];
 
         let converted_bets = numbers.split(", ");
-        return arrGames.push({
-          id: item.id,
+        arrGames.push({
+          id: convert_bets[index].id,
           type: game.type,
           color: game.color,
           price: game.price,
           date: date,
           numbers: converted_bets,
         });
-      });
-      // return arrGames;
+      }
 
       if (convert_bets.length === 0)
         return response.status(200).json({
@@ -161,7 +172,6 @@ class BetController {
           user_message: "Nenhuma aposta encontrada.",
           data: [],
         });
-      // const {bet} = convert_bets
 
       return response.status(200).json({
         type: "success",
@@ -208,14 +218,7 @@ class BetController {
             game_id: betObj.games[index].game_id,
             numbers: betObj.games[index].numbers,
           });
-
-        // return bet_updated;
       }
-
-      // let game_updated = await Bet.query().where("id", gameObj.game_id).update({
-      //   game_id: 1,
-      //   numbers: "",
-      // });
 
       if (bet_updated === 0) {
         return response.status(200).json({
@@ -276,6 +279,21 @@ class BetController {
         error: error.toString(),
       });
     }
+  }
+
+  formatDate(date) {
+    let dataUniversal = new Date(date);
+    let convert_date = dataUniversal.toJSON();
+
+    let dateReplaceAll = convert_date.split("-").join("");
+
+    let arrayPartDate = [
+      dateReplaceAll.substring(0, 4),
+      dateReplaceAll.substring(4, 6),
+      dateReplaceAll.substring(6, 8),
+    ];
+    console.log(date);
+    return `${arrayPartDate[2]}-${arrayPartDate[1]}-${arrayPartDate[0]}`;
   }
 }
 

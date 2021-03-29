@@ -28,9 +28,15 @@ class ExceptionHandler extends BaseExceptionHandler {
       });
     }
     if(error.message === "E_INVALID_JWT_TOKEN: jwt must be provided"){
-      return response.status(401).json({
+      return response.status(403).json({
         type: "Unauthorized",
         error: "Token JWT deve ser fornecido.",
+      });
+    }
+    if(error.message === "E_JWT_TOKEN_EXPIRED: The jwt token has been expired. Generate a new one to continue"){
+      return response.status(401).json({
+        type: "Unauthorized",
+        error: "Token JWT expirado, gere um novo para continuar.",
       });
     }
     response.status(error.status).send(error.message)

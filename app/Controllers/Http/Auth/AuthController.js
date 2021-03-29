@@ -82,7 +82,6 @@ class AuthController {
 
       return response.status(200).json({
         type: "success",
-        status_code: 200,
         message: "Token successfully verified.",
         user_message: "Token verificado com sucesso.",
         data: user,
@@ -90,43 +89,39 @@ class AuthController {
 
       // return await auth.getUser()
     } catch (error) {
-      if (
-        error.toString() ===
-        "InvalidJwtToken: E_INVALID_JWT_TOKEN: invalid token"
-      )
-        return response.status(401).json({
-          type: "error",
-          status_code: 401,
-          message: "exception found",
-          user_message: "Token invalido",
-          data: false,
-        });
-      else if (
-        error.toString() ===
-        "ExpiredJwtToken: E_JWT_TOKEN_EXPIRED: The jwt token has been expired. Generate a new one to continue"
-      )
-        return response.status(401).json({
-          type: "error",
-          status_code: 401,
-          message: "exception found",
-          user_message: "Token expirado",
-          data: false,
-        });
-      else if (
-        error.toString() ===
-        "InvalidJwtToken: E_INVALID_JWT_TOKEN: jwt must be provided"
-      )
-        return response.status(403).json({
-          type: "error",
-          status_code: 403,
-          message: "requered token",
-          user_message: "Token obrigatório",
-          data: [],
-        });
-      else
+      // if (
+      //   error.toString() ===
+      //   "InvalidJwtToken: E_INVALID_JWT_TOKEN: invalid token"
+      // )
+      //   return response.status(401).json({
+      //     type: "error",
+      //     message: "exception found",
+      //     user_message: "Token invalido",
+      //     data: false,
+      //   });
+      // else if (
+      //   error.toString() ===
+      //   "ExpiredJwtToken: E_JWT_TOKEN_EXPIRED: The jwt token has been expired. Generate a new one to continue"
+      // )
+      //   return response.status(401).json({
+      //     type: "error",
+      //     message: "exception found",
+      //     user_message: "Token expirado",
+      //     data: false,
+      //   });
+      // else if (
+      //   error.toString() ===
+      //   "InvalidJwtToken: E_INVALID_JWT_TOKEN: jwt must be provided"
+      // )
+      //   return response.status(403).json({
+      //     type: "error",
+      //     message: "requered token",
+      //     user_message: "Token obrigatório",
+      //     data: [],
+      //   });
+     // else
         return response.status(503).json({
           type: "error",
-          status_code: 503,
           message: "exception found",
           user_message: "Desculpe-nos, houve um problema",
           data: error.toString(),
