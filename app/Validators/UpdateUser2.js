@@ -1,6 +1,4 @@
 "use strict";
-// const Antl = use("Antl");
-
 class CreateProfessional {
   get validateAll() {
     return true;

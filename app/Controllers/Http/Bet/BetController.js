@@ -1,6 +1,7 @@
 "use strict";
 
 const Bet = use("App/Models/Bet");
+const Game = use("App/Models/Game");
 const Mail = use("Mail");
 
 class BetController {
@@ -32,26 +33,74 @@ class BetController {
 
   async store({ request, response, auth }) {
     let registeredBet = [];
-    let betRightNow = [];
-    let arrGames = [];
-    let dataEmail = [];
 
     try {
       const user = auth.user;
       const betObj = request.only(["date", "games"]);
-
+      let total = 0;
       for (let index = 0; index < betObj.games.length; index++) {
-        registeredBet.push(
-          await Bet.create({
-            date: betObj.date,
-            numbers: betObj.games[index].numbers,
-            game_id: betObj.games[index].game_id,
-            user_id: user.id,
-          })
-        );
+        const game = await Game.query()
+          .where("id", betObj.games[index].game_id)
+          .firstOrFail();
+
+        let bet = await Bet.create({
+          date: betObj.date,
+          numbers: betObj.games[index].numbers,
+          game_id: betObj.games[index].game_id,
+          user_id: user.id,
+        });
+        bet.type = game.type;
+        (bet.price = game.price
+          .toFixed(2)
+          .replace(".", ",")
+          .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")),
+          (bet.color = game.color);
+        total += game.price;
+
+        registeredBet.push(bet);
       }
 
-      const bet = await Bet.query()
+      let dataEmail = {
+        full_name: user.full_name,
+        games: registeredBet,
+        total: total
+          .toFixed(2)
+          .replace(".", ",")
+          .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."),
+      };
+
+      await Mail.send(["emails.historic-bet"], dataEmail, (message) => {
+        message
+          .to(user.email)
+          .from("contato@deliveryserver.com.br")
+          .subject("Histórico de aposta");
+      });
+
+      return response.status(200).json({
+        type: "success",
+        message: "Bet successfully registered.",
+        user_message: "Aposta cadastrado com sucesso.",
+        data: [],
+      });
+
+      /*     for (let index = 0; index < arrayFlat.length; index++) {
+        const { id, price, date, numbers, user, game } = arrayFlat[index];
+        let converted_bets = numbers.split(", ");
+
+        arrGames.push({
+          id: arrayFlat.id,
+          type: game.type,
+          color: game.color,
+          price: game.price
+            .toFixed(2)
+            .replace(".", ",")
+            .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."),
+          date: this.formatDate(date),
+          numbers: converted_bets,
+        });
+      }*/
+
+      /*  const bet = await Bet.query()
         .with("user", (builder) => {
           builder.setVisible(["id", "full_name"]);
         })
@@ -61,7 +110,8 @@ class BetController {
         .where("user_id", user.id)
         .setHidden(["user_id", "game_id", "created_at", "updated_at"])
         .fetch();
-
+        */
+      /*
       let convert_bets = bet.toJSON();
 
       for (let index = 0; index < registeredBet.length; index++) {
@@ -79,48 +129,7 @@ class BetController {
         },
         [0]
       );
-
-      for (let index = 0; index < arrayFlat.length; index++) {
-        const { id, price, date, numbers, user, game } = arrayFlat[index];
-        let converted_bets = numbers.split(", ");
-
-        arrGames.push({
-          id: arrayFlat.id,
-          type: game.type,
-          color: game.color,
-          price: game.price
-            .toFixed(2)
-            .replace(".", ",")
-            .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."),
-          date: this.formatDate(date),
-          numbers: converted_bets,
-        });
-      }
-
-      dataEmail = [
-        {
-          full_name: user.full_name,
-          games: arrGames,
-          total: total
-            .toFixed(2)
-            .replace(".", ",")
-            .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."),
-        },
-      ];
-
-      await Mail.send(["emails.historic-bet"], dataEmail[0], (message) => {
-        message
-          .to(user.email)
-          .from("contato@deliveryserver.com.br")
-          .subject("Histórico de aposta");
-      });
-
-      return response.status(200).json({
-        type: "success",
-        message: "Bet successfully registered.",
-        user_message: "Aposta cadastrado com sucesso.",
-        data: [],
-      });
+*/
     } catch (error) {
       return response.status(503).json({
         type: "error",

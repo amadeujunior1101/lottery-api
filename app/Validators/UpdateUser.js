@@ -2,9 +2,14 @@
 
 class CreateUser {
   get rules() {
+    const {userId} = this.ctx.request;
+    // console.log("Context==>", this.ctx.response.adonisRequest._body.email)
+    // console.log("Context=============>", this.ctx.request.Config._config.app)
+    console.log("Context=============>", userId)
     return {
+      // validar pelo id
       full_name: "required",
-      email: "required|email",
+      email: `unique:users,email,id,${userId}`,
       password: "required|min:6",
     };
   }
