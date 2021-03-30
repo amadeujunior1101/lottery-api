@@ -1,9 +1,8 @@
 "use strict";
 /** @typedef {import('@adonisjs/auth/src/Schemes/Session')} AuthSession */
-class CreateUser {
+class UpdateUser {
   get rules() {
     const userId = this.ctx._auth_.jwtPayload.uid;
-    // console.log("Context=============>", userId);
     return {
       // validar pelo id
       full_name: "required",
@@ -60,4 +59,4 @@ class CreateUser {
   }
 }
 
-module.exports = CreateUser;
+module.exports = UpdateUser;

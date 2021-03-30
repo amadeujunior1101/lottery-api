@@ -20,10 +20,9 @@ class ExceptionHandler extends BaseExceptionHandler {
    *
    * @return {void}
    */
-  async handle(error, ctx, { request, response }) {
-
+  async handle(error, { request, response }) {
     if (
-      error.code ===
+      error.message ===
       "InvalidJwtToken: E_INVALID_JWT_TOKEN: jwt must be provided"
     ) {
       return ctx.response.status(401).json({

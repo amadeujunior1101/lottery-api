@@ -25,7 +25,7 @@ class BetSchema extends Schema {
         .onUpdate("cascade")
         .onDelete("cascade");
 
-      table.string("date").notNullable();
+      table.timestamp("date").notNullable();
       table.string("numbers").notNullable();
       table.timestamps();
     });
