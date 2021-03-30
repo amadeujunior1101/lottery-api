@@ -143,6 +143,7 @@ class ConfirmationController {
       });
     }
   }
+
 }
 
 module.exports = ConfirmationController;

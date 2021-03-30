@@ -1,6 +1,6 @@
-'use strict'
+"use strict";
 
-const BaseExceptionHandler = use('BaseExceptionHandler')
+const BaseExceptionHandler = use("BaseExceptionHandler");
 
 /**
  * This class handles all exceptions thrown during
@@ -20,26 +20,39 @@ class ExceptionHandler extends BaseExceptionHandler {
    *
    * @return {void}
    */
-  async handle (error, { request, response }) {
-    if(error.message === "E_INVALID_JWT_TOKEN: invalid token"){
+  async handle(error, ctx, { request, response }) {
+
+    if (
+      error.code ===
+      "InvalidJwtToken: E_INVALID_JWT_TOKEN: jwt must be provided"
+    ) {
+      return ctx.response.status(401).json({
+        type: "Unauthorized",
+        error: "Token JWT inválido.",
+      });
+    }
+    if (error.message === "E_INVALID_JWT_TOKEN: invalid token") {
       return response.status(401).json({
         type: "Unauthorized",
         error: "Token JWT inválido.",
       });
     }
-    if(error.message === "E_INVALID_JWT_TOKEN: jwt must be provided"){
+    if (error.message === "E_INVALID_JWT_TOKEN: jwt must be provided") {
       return response.status(403).json({
         type: "Unauthorized",
         error: "Token JWT deve ser fornecido.",
       });
     }
-    if(error.message === "E_JWT_TOKEN_EXPIRED: The jwt token has been expired. Generate a new one to continue"){
+    if (
+      error.message ===
+      "E_JWT_TOKEN_EXPIRED: The jwt token has been expired. Generate a new one to continue"
+    ) {
       return response.status(401).json({
         type: "Unauthorized",
         error: "Token JWT expirado, gere um novo para continuar.",
       });
     }
-    response.status(error.status).send(error.message)
+    response.status(error.status).send(error.message);
   }
 
   /**
@@ -52,8 +65,7 @@ class ExceptionHandler extends BaseExceptionHandler {
    *
    * @return {void}
    */
-  async report (error, { request }) {
-  }
+  async report(error, { request }) {}
 }
 
-module.exports = ExceptionHandler
+module.exports = ExceptionHandler;

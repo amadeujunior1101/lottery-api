@@ -11,8 +11,6 @@ class BetController {
 
       let convert_bets = bet.toJSON();
 
-      // convert_bets.data
-
       return response.status(200).json({
         type: "success",
         status_code: 200,
@@ -62,7 +60,9 @@ class BetController {
 
       let dataEmail = {
         full_name: user.full_name,
-        games: registeredBet,
+        games: registeredBet.filter((item) => {
+          return (item.date = this.formatDate(item.date));
+        }),
         total: total
           .toFixed(2)
           .replace(".", ",")
@@ -82,54 +82,6 @@ class BetController {
         user_message: "Aposta cadastrado com sucesso.",
         data: [],
       });
-
-      /*     for (let index = 0; index < arrayFlat.length; index++) {
-        const { id, price, date, numbers, user, game } = arrayFlat[index];
-        let converted_bets = numbers.split(", ");
-
-        arrGames.push({
-          id: arrayFlat.id,
-          type: game.type,
-          color: game.color,
-          price: game.price
-            .toFixed(2)
-            .replace(".", ",")
-            .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."),
-          date: this.formatDate(date),
-          numbers: converted_bets,
-        });
-      }*/
-
-      /*  const bet = await Bet.query()
-        .with("user", (builder) => {
-          builder.setVisible(["id", "full_name"]);
-        })
-        .with("game", (builder) => {
-          builder.setVisible(["id", "type", "color", "price"]);
-        })
-        .where("user_id", user.id)
-        .setHidden(["user_id", "game_id", "created_at", "updated_at"])
-        .fetch();
-        */
-      /*
-      let convert_bets = bet.toJSON();
-
-      for (let index = 0; index < registeredBet.length; index++) {
-        betRightNow.push(
-          convert_bets.filter((item, index2) => {
-            return item.id === registeredBet[index].id;
-          })
-        );
-      }
-
-      let arrayFlat = betRightNow.flat();
-      var total = arrayFlat.reduce(
-        (accumulator, currentValue) => {
-          return Number(accumulator) + currentValue.game.price;
-        },
-        [0]
-      );
-*/
     } catch (error) {
       return response.status(503).json({
         type: "error",

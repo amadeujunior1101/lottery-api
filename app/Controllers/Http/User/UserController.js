@@ -12,8 +12,6 @@ class UserController {
         .setHidden(["password", "reset_password", "created_at", "updated_at"])
         .fetch();
 
-      // let convert_games = game.toJSON();
-
       return response.status(200).json({
         type: "success",
         message: "List users.",
@@ -52,18 +50,16 @@ class UserController {
         created_at: new Date(),
       });
 
-      let dataEmail = [
-        {
-          token: token.token,
-          full_name: userObj.full_name
-            .trim()
-            .replace(/\s{2,}/g, " ")
-            .replace(/[^a-zA-Z ]/g, "")
-            .toUpperCase(),
-        },
-      ];
+      let dataEmail = {
+        token: token.token,
+        full_name: userObj.full_name
+          .trim()
+          .replace(/\s{2,}/g, " ")
+          .replace(/[^a-zA-Z ]/g, "")
+          .toUpperCase(),
+      };
 
-      await Mail.send(["emails.confirm-user"], dataEmail[0], (message) => {
+      await Mail.send(["emails.confirm-user"], dataEmail, (message) => {
         message
           .to(user.email)
           .from("contato@deliveryserver.com.br")

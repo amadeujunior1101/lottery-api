@@ -42,8 +42,6 @@ class GameController {
         "min_cart_value",
       ]);
 
-      // return gameObj
-
       await Game.create(gameObj);
 
       return response.status(200).json({

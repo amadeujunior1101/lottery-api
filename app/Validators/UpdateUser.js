@@ -1,11 +1,9 @@
 "use strict";
-
+/** @typedef {import('@adonisjs/auth/src/Schemes/Session')} AuthSession */
 class CreateUser {
   get rules() {
-    const {userId} = this.ctx.request;
-    // console.log("Context==>", this.ctx.response.adonisRequest._body.email)
-    // console.log("Context=============>", this.ctx.request.Config._config.app)
-    console.log("Context=============>", userId)
+    const userId = this.ctx._auth_.jwtPayload.uid;
+    // console.log("Context=============>", userId);
     return {
       // validar pelo id
       full_name: "required",

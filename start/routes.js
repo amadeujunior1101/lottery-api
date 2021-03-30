@@ -44,4 +44,4 @@ Route.group(() => {
   );
   Route.post("auth", "Auth/AuthController.store");
   Route.post("token-check", "Auth/AuthController.token_check");
-}).middleware(["guest"]);
+});
