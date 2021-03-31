@@ -35,6 +35,7 @@ class BetController {
     try {
       const user = auth.user;
       const betObj = request.only(["date", "games"]);
+
       let total = 0;
       for (let index = 0; index < betObj.games.length; index++) {
         const game = await Game.query()
@@ -43,7 +44,7 @@ class BetController {
 
         let bet = await Bet.create({
           date: betObj.date,
-          numbers: betObj.games[index].numbers,
+          numbers: betObj.games[index].numbers.toString().split(",").join(", "),
           game_id: betObj.games[index].game_id,
           user_id: user.id,
         });

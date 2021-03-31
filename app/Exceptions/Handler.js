@@ -25,7 +25,7 @@ class ExceptionHandler extends BaseExceptionHandler {
       error.message ===
       "InvalidJwtToken: E_INVALID_JWT_TOKEN: jwt must be provided"
     ) {
-      return ctx.response.status(401).json({
+      return response.status(401).json({
         type: "Unauthorized",
         error: "Token JWT inválido.",
       });
