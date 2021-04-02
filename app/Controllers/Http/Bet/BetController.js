@@ -254,7 +254,7 @@ class BetController {
       dateReplaceAll.substring(4, 6),
       dateReplaceAll.substring(6, 8),
     ];
-    console.log(date);
+    // console.log(date);
     return `${arrayPartDate[2]}-${arrayPartDate[1]}-${arrayPartDate[0]}`;
   }
 }

@@ -25,7 +25,7 @@ class CreateUser {
       },
       "email.email": {
         type: "info",
-        message: "Incorrect email format.l",
+        message: "Incorrect email formate.",
         user_message: "Formato de E-mail incorreto.",
         data: [],
       },

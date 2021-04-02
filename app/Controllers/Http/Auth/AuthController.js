@@ -34,7 +34,7 @@ class AuthController {
           type: "success",
           status_code: 200,
           message: "Access your mailbox and confirm your user.",
-          user_message: "Acesse sua caixa de emails e condirme seu usuário.",
+          user_message: "Acesse sua caixa de emails e confirme seu usuário.",
           data: [],
         });
       }

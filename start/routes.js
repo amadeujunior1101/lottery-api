@@ -29,7 +29,7 @@ Route.group(() => {
 }).middleware(["auth"]);
 
 Route.group(() => {
-  Route.post("create-users", "User/UserController.store").validator(
+  Route.post("create-user", "User/UserController.store").validator(
     "CreateUser"
   );
 
