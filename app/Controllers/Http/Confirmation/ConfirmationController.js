@@ -11,7 +11,7 @@ class ConfirmationController {
   async store({ request, response, params, view }) {
     const { token } = request.get();
 
-    const checkToken = await Token.findBy("token", token);
+    const checkToken = await User.findBy("reset_password", token);
 
     if (!checkToken)
       return response.status(200).json({
@@ -21,17 +21,6 @@ class ConfirmationController {
         user_message: "Token invalido.",
         data: [],
       });
-
-    if (checkToken.is_revoked == 1)
-      return response.status(200).json({
-        type: "success",
-        status_code: 200,
-        message: "Token revoked.",
-        user_message: "Token revogado.",
-        data: [],
-      });
-
-    checkToken.is_revoked = 1;
 
     await checkToken.save();
 

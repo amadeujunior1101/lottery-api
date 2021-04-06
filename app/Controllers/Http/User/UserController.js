@@ -5,6 +5,9 @@ const Token = use("App/Models/Token");
 const crypto = require("crypto");
 const Mail = use("Mail");
 
+/** @type {import('@adonisjs/framework/src/Hash')} */
+const Hash = use("Hash");
+
 class UserController {
   async index({ request, response }) {
     try {
@@ -110,15 +113,27 @@ class UserController {
         });
       }
 
-      const instance_user = await User.find(user.id);
+      await User.query()
+        .where("id", user.id)
+        .update({
+          full_name: userObj.full_name
+            .trim()
+            .replace(/\s{2,}/g, " ")
+            .replace(/[^a-zA-ZÀ-ú ]/g, "")
+            .toUpperCase(),
+          email: userObj.email.trim(),
+          password: await Hash.make(userObj.password.trim()),
+        });
 
-      instance_user.merge({
-        full_name: userObj.full_name,
-        email: userObj.email,
-        password: userObj.password,
-      });
+      // const instance_user = await User.find(user.id);
 
-      await instance_user.save();
+      // instance_user.merge({
+      //   full_name: userObj.full_name,
+      //   email: userObj.email,
+      //   password: userObj.password,
+      // });
+
+      // await instance_user.save();
 
       return response.status(200).json({
         type: "success",
