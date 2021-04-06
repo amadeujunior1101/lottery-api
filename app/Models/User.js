@@ -18,7 +18,7 @@ class User extends Model {
       userInstance.full_name = userInstance.full_name
         .trim()
         .replace(/\s{2,}/g, " ")
-        .replace(/[^a-zA-Z ]/g, "")
+        .replace(/[^a-zA-ZÀ-ú ]/g, "")
         .toUpperCase();
 
       userInstance.password = await Hash.make(userInstance.password);

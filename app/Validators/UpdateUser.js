@@ -3,10 +3,10 @@
 class UpdateUser {
   get rules() {
     const userId = this.ctx._auth_.jwtPayload.uid;
+
     return {
-      // validar pelo id
       full_name: "required",
-      email: `unique:users,email,id,${userId}`,
+      email: `required|unique:users, email, id, ${userId}`,
       password: "required|min:6",
     };
   }
@@ -27,7 +27,7 @@ class UpdateUser {
       },
       "email.email": {
         type: "info",
-        message: "Incorrect email format.l",
+        message: "Incorrect email format.",
         user_message: "Formato de E-mail incorreto.",
         data: [],
       },
