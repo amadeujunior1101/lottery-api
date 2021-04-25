@@ -34,6 +34,7 @@ Route.group(() => {
   );
 
   Route.post("confirmation-user", "Confirmation/ConfirmationController.store");
+  Route.post("confirmation-user-reset", "Confirmation/ConfirmationController.check_reset_password");
   Route.post(
     "confirmation-forgot-password",
     "Confirmation/ConfirmationController.forgot_password"

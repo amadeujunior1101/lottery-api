@@ -11,8 +11,8 @@ class ConfirmationController {
   async store({ request, response, params, view }) {
     const { token } = request.get();
 
-    const checkToken = await User.findBy("reset_password", token);
-
+    const checkToken = await Token.findBy("token", token);
+    // return checkToken;
     if (!checkToken)
       return response.status(200).json({
         type: "success",
@@ -22,6 +22,8 @@ class ConfirmationController {
         data: [],
       });
 
+    checkToken.is_revoked = 1;
+
     await checkToken.save();
 
     return response.status(200).json({
@@ -30,6 +32,29 @@ class ConfirmationController {
       message: "Token valid.",
       user_message: "Token valido.",
       data: checkToken,
+    });
+  }
+
+  async check_reset_password({ request, response, params, view }) {
+    const { token } = request.get();
+
+    const checkReset = await User.findBy("reset_password", token);
+    // return checkToken;
+    if (!checkReset)
+      return response.status(200).json({
+        type: "success",
+        status_code: 200,
+        message: "Token invalid.",
+        user_message: "Token invalido.",
+        data: [],
+      });
+
+    return response.status(200).json({
+      type: "success",
+      status_code: 200,
+      message: "Token valid.",
+      user_message: "Token valido.",
+      data: checkReset,
     });
   }
 
@@ -132,7 +157,6 @@ class ConfirmationController {
       });
     }
   }
-
 }
 
 module.exports = ConfirmationController;
